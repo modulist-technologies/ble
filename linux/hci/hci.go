@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"strings"
 	"sync"
 	"time"
 
@@ -351,7 +350,7 @@ func (h *HCI) send(c Command) ([]byte, error) {
 		err = fmt.Errorf("hci: no response to command, hci connection failed")
 		fmt.Println("no response to command")
 		fmt.Println("pending commands:")
-		fmt.Printf("cmd: %x pkt: %s\n", c.OpCode(), hex.EncodeToString(b[:4 + c.Len()]))
+		fmt.Printf("cmd: %x pkt: %s\n", c.OpCode(), hex.EncodeToString(b[:4+c.Len()]))
 		h.dispatchError(err)
 		ret = nil
 	case <-h.done:
@@ -399,12 +398,13 @@ func (h *HCI) sktProcessLoop() {
 		if err := h.handlePkt(p); err != nil {
 			// Some bluetooth devices may append vendor specific packets at the last,
 			// in this case, simply ignore them.
-			if strings.HasPrefix(err.Error(), "unsupported vendor packet:") {
-				_ = logger.Error("skt: %v", err)
-			} else {
-				h.err = fmt.Errorf("skt handle error: %v", err)
-				return
-			}
+			// if strings.HasPrefix(err.Error(), "unsupported vendor packet:") {
+			// 	_ = logger.Error("skt: %v", err)
+			// } else {
+			// 	h.err = fmt.Errorf("skt handle error: %v", err)
+			// 	return
+			// }
+			fmt.Println(err)
 		}
 	}
 }
